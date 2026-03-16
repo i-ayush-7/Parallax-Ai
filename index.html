@@ -1,29 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ghost Debugger</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap"
+        rel="stylesheet">
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         :root {
-            --amber:       #FF9500;
-            --amber-bright:#FFB340;
-            --amber-dim:   rgba(255, 149, 0, 0.12);
-            --amber-glow:  rgba(255, 149, 0, 0.3);
-            --amber-border:rgba(255, 149, 0, 0.28);
+            --amber: #FF9500;
+            --amber-bright: #FFB340;
+            --amber-dim: rgba(255, 149, 0, 0.12);
+            --amber-glow: rgba(255, 149, 0, 0.3);
+            --amber-border: rgba(255, 149, 0, 0.28);
             --amber-border-bright: rgba(255, 149, 0, 0.6);
-            --exec:        #FF3B5C;
-            --exec-dim:    rgba(255, 59, 92, 0.12);
+            --exec: #FF3B5C;
+            --exec-dim: rgba(255, 59, 92, 0.12);
             --exec-border: rgba(255, 59, 92, 0.5);
-            --green-ok:    #34C759;
-            --bg-shell:    rgba(8, 6, 2, 0.93);
-            --bg-code:     rgba(4, 3, 1, 0.85);
-            --text:        #D4B896;
+            --green-ok: #34C759;
+            --bg-shell: rgba(8, 6, 2, 0.93);
+            --bg-code: rgba(4, 3, 1, 0.85);
+            --text: #D4B896;
             --text-bright: #F0DFC0;
-            --text-dim:    #5A4830;
+            --text-dim: #5A4830;
             --font: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
         }
 
@@ -42,13 +51,11 @@
             content: '';
             position: fixed;
             inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 3px,
-                rgba(0, 0, 0, 0.07) 3px,
-                rgba(0, 0, 0, 0.07) 4px
-            );
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(0, 0, 0, 0.07) 3px,
+                    rgba(0, 0, 0, 0.07) 4px);
             pointer-events: none;
             z-index: 9999;
         }
@@ -56,14 +63,17 @@
         /* ─── OUTER SHELL ─── */
         .hud-shell {
             position: absolute;
-            top: 14px; left: 14px; right: 14px; bottom: 14px;
+            top: 14px;
+            left: 14px;
+            right: 14px;
+            bottom: 14px;
             background: var(--bg-shell);
             border: 1px solid var(--amber-border);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             box-shadow:
-                0 0 0 1px rgba(0,0,0,0.8),
+                0 0 0 1px rgba(0, 0, 0, 0.8),
                 0 0 30px rgba(255, 149, 0, 0.08),
                 inset 0 1px 0 rgba(255, 149, 0, 0.06);
             -webkit-app-region: drag;
@@ -73,18 +83,23 @@
         .hud-shell::before {
             content: '';
             position: absolute;
-            top: -1px; left: -1px;
-            width: 14px; height: 14px;
+            top: -1px;
+            left: -1px;
+            width: 14px;
+            height: 14px;
             border-top: 2px solid var(--amber);
             border-left: 2px solid var(--amber);
             z-index: 10;
             pointer-events: none;
         }
+
         .hud-shell::after {
             content: '';
             position: absolute;
-            bottom: -1px; right: -1px;
-            width: 14px; height: 14px;
+            bottom: -1px;
+            right: -1px;
+            width: 14px;
+            height: 14px;
             border-bottom: 2px solid var(--amber);
             border-right: 2px solid var(--amber);
             z-index: 10;
@@ -108,7 +123,9 @@
         .hud-header::after {
             content: '';
             position: absolute;
-            bottom: 0; left: 10%; right: 10%;
+            bottom: 0;
+            left: 10%;
+            right: 10%;
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--amber-glow), transparent);
         }
@@ -152,7 +169,10 @@
             background: var(--green-ok);
             box-shadow: 0 0 6px var(--green-ok);
         }
-        .status-pill.live { color: var(--text); }
+
+        .status-pill.live {
+            color: var(--text);
+        }
 
         .hud-build {
             font-size: 0.58em;
@@ -173,8 +193,14 @@
             scroll-behavior: smooth;
         }
 
-        #chat-content::-webkit-scrollbar { width: 3px; }
-        #chat-content::-webkit-scrollbar-track { background: transparent; }
+        #chat-content::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        #chat-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
         #chat-content::-webkit-scrollbar-thumb {
             background: var(--amber-border-bright);
             border-radius: 2px;
@@ -190,20 +216,46 @@
             font-size: 0.72em;
             letter-spacing: 1.5px;
         }
-        .thinking.active { display: flex; }
-        .thinking-dots { display: flex; gap: 4px; }
+
+        .thinking.active {
+            display: flex;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 4px;
+        }
+
         .thinking-dots span {
-            width: 4px; height: 4px;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
             background: var(--amber);
             opacity: 0.3;
             animation: dot-pulse 1.2s ease-in-out infinite;
         }
-        .thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        .thinking-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .thinking-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
         @keyframes dot-pulse {
-            0%,100% { opacity: 0.2; transform: scale(0.8); }
-            50%      { opacity: 1;   transform: scale(1.2); box-shadow: 0 0 6px var(--amber); }
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+                box-shadow: 0 0 6px var(--amber);
+            }
         }
 
         /* ─── CODE BLOCKS ─── */
@@ -214,7 +266,7 @@
             margin: 10px 0;
             border-radius: 0 3px 3px 0;
             position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.4);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -229,6 +281,7 @@
             background: rgba(255, 149, 0, 0.06);
             border-bottom: 1px solid rgba(255, 149, 0, 0.1);
         }
+
         .code-lang-label {
             font-size: 0.6em;
             letter-spacing: 2px;
@@ -260,7 +313,8 @@
             -webkit-app-region: no-drag;
         }
 
-        .copy-btn, .exec-btn {
+        .copy-btn,
+        .exec-btn {
             font-size: 0.63em;
             cursor: pointer;
             padding: 4px 11px;
@@ -278,24 +332,32 @@
             border: 1px solid var(--amber-border-bright);
             color: var(--amber);
         }
+
         .copy-btn:hover {
             background: var(--amber);
             color: #000;
             box-shadow: 0 0 10px var(--amber-glow);
         }
-        .copy-btn:active { transform: scale(0.96); }
+
+        .copy-btn:active {
+            transform: scale(0.96);
+        }
 
         .exec-btn {
             background: var(--exec-dim);
             border: 1px solid var(--exec-border);
             color: var(--exec);
         }
+
         .exec-btn:hover {
             background: var(--exec);
             color: #fff;
             box-shadow: 0 0 10px rgba(255, 59, 92, 0.4);
         }
-        .exec-btn:active { transform: scale(0.96); }
+
+        .exec-btn:active {
+            transform: scale(0.96);
+        }
 
         /* ─── CHAT INPUT BAR ─── */
         .chat-input-bar {
@@ -322,7 +384,11 @@
             transition: border-color 0.2s, box-shadow 0.2s;
             -webkit-app-region: no-drag;
         }
-        #chat-input::placeholder { color: var(--text-dim); }
+
+        #chat-input::placeholder {
+            color: var(--text-dim);
+        }
+
         #chat-input:focus {
             border-color: var(--amber-border-bright);
             box-shadow: 0 0 8px rgba(255, 149, 0, 0.1);
@@ -342,18 +408,23 @@
             -webkit-app-region: no-drag;
             flex-shrink: 0;
         }
+
         #btn-send:hover {
             background: var(--amber);
             color: #000;
             box-shadow: 0 0 10px var(--amber-glow);
         }
-        #btn-send:active { transform: scale(0.96); }
+
+        #btn-send:active {
+            transform: scale(0.96);
+        }
 
         /* User message bubble */
         .user-msg {
             text-align: right;
             margin: 6px 0 10px;
         }
+
         .user-msg span {
             display: inline-block;
             background: rgba(255, 149, 0, 0.1);
@@ -405,14 +476,17 @@
         }
 
         .g-ring-1 {
-            width: 46px; height: 46px;
+            width: 46px;
+            height: 46px;
             border-width: 1px;
             border-top-color: rgba(255, 149, 0, 0.25);
             border-right-color: rgba(255, 149, 0, 0.10);
             animation: spin 9s linear infinite;
         }
+
         .g-ring-2 {
-            width: 32px; height: 32px;
+            width: 32px;
+            height: 32px;
             border-width: 1px;
             border-bottom-color: rgba(255, 149, 0, 0.5);
             border-left-color: rgba(255, 149, 0, 0.2);
@@ -420,7 +494,8 @@
         }
 
         .g-nucleus {
-            width: 10px; height: 10px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: var(--amber);
             box-shadow: 0 0 6px var(--amber), 0 0 16px var(--amber-glow);
@@ -430,13 +505,27 @@
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes breathe {
-            0%,100% { box-shadow: 0 0 6px var(--amber), 0 0 16px var(--amber-glow); opacity: 0.8; }
-            50%     { box-shadow: 0 0 10px var(--amber), 0 0 28px var(--amber-glow); opacity: 1; }
+
+            0%,
+            100% {
+                box-shadow: 0 0 6px var(--amber), 0 0 16px var(--amber-glow);
+                opacity: 0.8;
+            }
+
+            50% {
+                box-shadow: 0 0 10px var(--amber), 0 0 28px var(--amber-glow);
+                opacity: 1;
+            }
         }
 
         /* Speaking state */
@@ -445,22 +534,27 @@
             border-top-color: rgba(255, 149, 0, 0.8);
             border-right-color: rgba(255, 149, 0, 0.5);
         }
+
         #ghost-core.speaking .g-ring-2 {
             animation: spin 0.7s linear infinite reverse;
             border-bottom-color: var(--amber);
             border-left-color: rgba(255, 149, 0, 0.7);
         }
+
         #ghost-core.speaking .g-nucleus {
             animation: pulse-speak 0.45s ease-in-out infinite;
         }
 
         @keyframes pulse-speak {
-            0%,100% {
-                box-shadow: 0 0 12px var(--amber), 0 0 30px var(--amber-glow), 0 0 55px rgba(255,149,0,0.15);
+
+            0%,
+            100% {
+                box-shadow: 0 0 12px var(--amber), 0 0 30px var(--amber-glow), 0 0 55px rgba(255, 149, 0, 0.15);
                 transform: scale(1);
             }
+
             50% {
-                box-shadow: 0 0 20px var(--amber-bright), 0 0 50px var(--amber-glow), 0 0 80px rgba(255,149,0,0.1);
+                box-shadow: 0 0 20px var(--amber-bright), 0 0 50px var(--amber-glow), 0 0 80px rgba(255, 149, 0, 0.1);
                 transform: scale(1.5);
             }
         }
@@ -510,9 +604,17 @@
             flex-shrink: 0;
         }
 
-        video { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; z-index: -1; }
+        video {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+            pointer-events: none;
+            z-index: -1;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="hud-shell" id="chat-panel">
@@ -564,233 +666,234 @@
     <video id="screen-preview" muted></video>
 
     <script>
-    const ws = new WebSocket("ws://localhost:8000/ws");
-    const videoElement = document.getElementById('screen-preview');
-    const chatContent = document.getElementById('chat-content');
-    const ghostCore = document.getElementById('ghost-core');
+        const ws = new WebSocket("wss://parallax-ai-274668318460.us-central1.run.app/ws");
+        const videoElement = document.getElementById('screen-preview');
+        const chatContent = document.getElementById('chat-content');
+        const ghostCore = document.getElementById('ghost-core');
 
-    let micContext, playContext, screenInterval;
-    let nextStartTime = 0; 
-    let audioTimer, messageTimeout; 
-    
-    let currentMessageText = ""; 
-    let currentMessageDiv = null; 
+        let micContext, playContext, screenInterval;
+        let nextStartTime = 0;
+        let audioTimer, messageTimeout;
 
-    const thinkingIndicator = document.getElementById('thinking-indicator');
+        let currentMessageText = "";
+        let currentMessageDiv = null;
 
-    function showThinking() {
-        // Move indicator to bottom of chat and show it
-        chatContent.appendChild(thinkingIndicator);
-        thinkingIndicator.classList.add('active');
-        chatContent.scrollTop = chatContent.scrollHeight;
-    }
-    function hideThinking() {
-        thinkingIndicator.classList.remove('active');
-    }
+        const thinkingIndicator = document.getElementById('thinking-indicator');
 
-    // Helper functions for inline buttons
-    window.copyCode = function(btn) {
-        const pre = btn.closest('.code-block').querySelector('pre');
-        navigator.clipboard.writeText(pre.innerText).then(() => {
-            btn.innerText = "✓ Copied!";
-            setTimeout(() => { btn.innerHTML = "&#x2398; Copy"; }, 2000);
-        });
-    };
+        function showThinking() {
+            // Move indicator to bottom of chat and show it
+            chatContent.appendChild(thinkingIndicator);
+            thinkingIndicator.classList.add('active');
+            chatContent.scrollTop = chatContent.scrollHeight;
+        }
+        function hideThinking() {
+            thinkingIndicator.classList.remove('active');
+        }
 
-    window.execCommand = function(btn) {
-        const pre = btn.closest('.code-block').querySelector('pre');
-        const cmd = pre.innerText.trim();
-        if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ execute_command: cmd }));
-            appendLog(`EXECUTING: ${cmd}`, '#FF9500');
-            btn.innerText = "Sent!";
-            setTimeout(() => { btn.innerText = "Execute"; }, 2000);
+        // Helper functions for inline buttons
+        window.copyCode = function (btn) {
+            const pre = btn.closest('.code-block').querySelector('pre');
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                btn.innerText = "✓ Copied!";
+                setTimeout(() => { btn.innerHTML = "&#x2398; Copy"; }, 2000);
+            });
+        };
+
+        window.execCommand = function (btn) {
+            const pre = btn.closest('.code-block').querySelector('pre');
+            const cmd = pre.innerText.trim();
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ execute_command: cmd }));
+                appendLog(`EXECUTING: ${cmd}`, '#FF9500');
+                btn.innerText = "Sent!";
+                setTimeout(() => { btn.innerText = "Execute"; }, 2000);
+                currentMessageDiv = null;
+            }
+        };
+
+        function sendTextMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text || ws.readyState !== WebSocket.OPEN) return;
+
+            // Show user bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = 'user-msg';
+            userBubble.innerHTML = `<span>${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`;
+            chatContent.appendChild(userBubble);
+            chatContent.scrollTop = chatContent.scrollHeight;
+
+            ws.send(JSON.stringify({ text_input: text }));
+            input.value = '';
             currentMessageDiv = null;
+            showThinking();
         }
-    };
 
-    function sendTextMessage() {
-        const input = document.getElementById('chat-input');
-        const text = input.value.trim();
-        if (!text || ws.readyState !== WebSocket.OPEN) return;
-
-        // Show user bubble
-        const userBubble = document.createElement('div');
-        userBubble.className = 'user-msg';
-        userBubble.innerHTML = `<span>${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`;
-        chatContent.appendChild(userBubble);
-        chatContent.scrollTop = chatContent.scrollHeight;
-
-        ws.send(JSON.stringify({ text_input: text }));
-        input.value = '';
-        currentMessageDiv = null;
-        showThinking();
-    }
-
-    document.getElementById('btn-send').addEventListener('click', sendTextMessage);
-    document.getElementById('chat-input').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTextMessage(); }
-    });
-
-    function appendLog(text, color) {
-        chatContent.innerHTML += `<div style="color:${color}; margin: 5px 0; font-size:0.9em;">> ${text}</div>`;
-        chatContent.scrollTop = chatContent.scrollHeight;
-    }
-
-    // Custom Real-Time Markdown Parser
-    function parseMarkdown(md) {
-        // Escape HTML
-        let html = md.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        
-        let codeBlocks = [];
-        // Extract and format code blocks
-        html = html.replace(/```([a-z0-9]*)\n([\s\S]*?)(```|$)/gi, function(match, lang, code, closeTag) {
-            let isComplete = closeTag === "```";
-            let isCmd = ['bash', 'sh', 'cmd', 'powershell', 'terminal'].includes(lang.toLowerCase());
-            let langLabel = lang ? lang.toUpperCase() : 'CODE';
-
-            let actionsHtml = '';
-            if (isComplete) {
-                let execBtn = isCmd ? `<button class="exec-btn" onclick="window.execCommand(this)">&#9889; Execute</button>` : '';
-                actionsHtml = `<div class="code-actions">${execBtn}<button class="copy-btn" onclick="window.copyCode(this)">&#x2398; Copy</button></div>`;
-            }
-
-            let token = `__CODE_BLOCK_${codeBlocks.length}__`;
-            codeBlocks.push(`<div class="code-block"><div class="code-lang"><span class="code-lang-label">${langLabel}</span></div><pre>${code}</pre>${actionsHtml}</div>`);
-            return token;
+        document.getElementById('btn-send').addEventListener('click', sendTextMessage);
+        document.getElementById('chat-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTextMessage(); }
         });
-        
-        // Format bold and inline code
-        html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#F0DFC0">$1</strong>');
-        html = html.replace(/`(.*?)`/g, '<span style="background: rgba(255,149,0,0.15); padding: 0 4px; border-radius: 2px; color:#FFB340;">$1</span>');
-        
-        // Convert newlines to breaks
-        html = html.replace(/\n/g, '<br>');
-        
-        // Re-insert code blocks
-        codeBlocks.forEach((block, index) => {
-            html = html.replace(`__CODE_BLOCK_${index}__`, block);
-        });
-        
-        return html;
-    }
 
-    document.getElementById('btn-screen').addEventListener('click', async () => {
-        try {
-            const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-            videoElement.srcObject = screenStream;
-            await videoElement.play();
-            
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-
-            screenInterval = setInterval(() => {
-                if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA && videoElement.videoWidth > 0) {
-                    canvas.width = 640; 
-                    canvas.height = Math.floor((videoElement.videoHeight / videoElement.videoWidth) * 640);
-                    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                    const base64Image = canvas.toDataURL('image/jpeg', 0.5).split(',')[1];
-                    if (ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ image: base64Image })); }
-                }
-            }, 500);
-
-            document.getElementById('status-scr').classList.add('live');
-            document.getElementById('btn-screen').classList.add('active');
-            appendLog("OPTICAL SENSORS ONLINE.", "#FF9500");
-        } catch (err) { console.error("Screen capture failed.", err); }
-    });
-
-    document.getElementById('btn-connect').addEventListener('click', async () => {
-        try {
-            micContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
-            playContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
-            const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const source = micContext.createMediaStreamSource(micStream);
-            const processor = micContext.createScriptProcessor(4096, 1, 1);
-            
-            source.connect(processor);
-            processor.connect(micContext.destination);
-
-            processor.onaudioprocess = (e) => {
-                const float32Array = e.inputBuffer.getChannelData(0);
-                const int16Array = new Int16Array(float32Array.length);
-                for (let i = 0; i < float32Array.length; i++) { int16Array[i] = Math.max(-32768, Math.min(32767, float32Array[i] * 32768)); }
-                let binary = '';
-                const bytes = new Uint8Array(int16Array.buffer);
-                for (let i = 0; i < bytes.byteLength; i++) { binary += String.fromCharCode(bytes[i]); }
-                if (ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ audio: window.btoa(binary) })); }
-            };
-
-            document.getElementById('status-aud').classList.add('live');
-            document.getElementById('btn-connect').classList.add('active');
-            appendLog("AUDIO UPLINK ESTABLISHED.", "#FF9500");
-        } catch (err) { console.error("Mic failed.", err); }
-    });
-
-    ws.onmessage = async (event) => {
-        try {
-            const data = JSON.parse(event.data);
-            
-            if (data.text) {
-                hideThinking();
-                // Handle system execution logs directly
-                if (data.text.includes("[LOG]")) {
-                    appendLog(data.text.replace("[LOG]", "").trim(), "#FF9500");
-                    currentMessageDiv = null; 
-                    return; 
-                }
-
-                // Setup a new message block if one isn't active
-                if (!currentMessageDiv) {
-                    currentMessageText = "";
-                    currentMessageDiv = document.createElement('div');
-                    currentMessageDiv.style.marginBottom = "15px";
-                    chatContent.appendChild(currentMessageDiv);
-                }
-
-                // Reset the idle timer. If AI stops speaking for 3s, the next text gets a new bubble.
-                clearTimeout(messageTimeout);
-                messageTimeout = setTimeout(() => { currentMessageDiv = null; }, 3000);
-
-                // Append the chunk and re-render the markdown
-                currentMessageText += data.text;
-                currentMessageDiv.innerHTML = parseMarkdown(currentMessageText);
-                chatContent.scrollTop = chatContent.scrollHeight;
-            }
-
-            if (data.audio && playContext) {
-                hideThinking();
-                const binaryString = window.atob(data.audio);
-                const pcmData = new Float32Array(binaryString.length / 2);
-                for (let i = 0; i < pcmData.length; i++) {
-                    const byte1 = binaryString.charCodeAt(i * 2);
-                    const byte2 = binaryString.charCodeAt(i * 2 + 1);
-                    let val = byte1 | (byte2 << 8);
-                    if (val >= 32768) val -= 65536; 
-                    pcmData[i] = val / 32768.0;     
-                }
-                
-                const audioBuffer = playContext.createBuffer(1, pcmData.length, 24000); 
-                audioBuffer.copyToChannel(pcmData, 0);
-                
-                const playSource = playContext.createBufferSource();
-                playSource.buffer = audioBuffer;
-                playSource.connect(playContext.destination);
-                
-                const currentTime = playContext.currentTime;
-                if (nextStartTime < currentTime) nextStartTime = currentTime;
-                
-                playSource.start(nextStartTime);
-                
-                ghostCore.classList.add("speaking");
-                clearTimeout(audioTimer);
-                audioTimer = setTimeout(() => { ghostCore.classList.remove("speaking"); }, audioBuffer.duration * 1000); 
-                nextStartTime += audioBuffer.duration;
-            }
-        } catch (e) {
-            console.error("Payload parse error:", e);
+        function appendLog(text, color) {
+            chatContent.innerHTML += `<div style="color:${color}; margin: 5px 0; font-size:0.9em;">> ${text}</div>`;
+            chatContent.scrollTop = chatContent.scrollHeight;
         }
-    };
+
+        // Custom Real-Time Markdown Parser
+        function parseMarkdown(md) {
+            // Escape HTML
+            let html = md.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            let codeBlocks = [];
+            // Extract and format code blocks
+            html = html.replace(/```([a-z0-9]*)\n([\s\S]*?)(```|$)/gi, function (match, lang, code, closeTag) {
+                let isComplete = closeTag === "```";
+                let isCmd = ['bash', 'sh', 'cmd', 'powershell', 'terminal'].includes(lang.toLowerCase());
+                let langLabel = lang ? lang.toUpperCase() : 'CODE';
+
+                let actionsHtml = '';
+                if (isComplete) {
+                    let execBtn = isCmd ? `<button class="exec-btn" onclick="window.execCommand(this)">&#9889; Execute</button>` : '';
+                    actionsHtml = `<div class="code-actions">${execBtn}<button class="copy-btn" onclick="window.copyCode(this)">&#x2398; Copy</button></div>`;
+                }
+
+                let token = `__CODE_BLOCK_${codeBlocks.length}__`;
+                codeBlocks.push(`<div class="code-block"><div class="code-lang"><span class="code-lang-label">${langLabel}</span></div><pre>${code}</pre>${actionsHtml}</div>`);
+                return token;
+            });
+
+            // Format bold and inline code
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#F0DFC0">$1</strong>');
+            html = html.replace(/`(.*?)`/g, '<span style="background: rgba(255,149,0,0.15); padding: 0 4px; border-radius: 2px; color:#FFB340;">$1</span>');
+
+            // Convert newlines to breaks
+            html = html.replace(/\n/g, '<br>');
+
+            // Re-insert code blocks
+            codeBlocks.forEach((block, index) => {
+                html = html.replace(`__CODE_BLOCK_${index}__`, block);
+            });
+
+            return html;
+        }
+
+        document.getElementById('btn-screen').addEventListener('click', async () => {
+            try {
+                const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                videoElement.srcObject = screenStream;
+                await videoElement.play();
+
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+
+                screenInterval = setInterval(() => {
+                    if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA && videoElement.videoWidth > 0) {
+                        canvas.width = 640;
+                        canvas.height = Math.floor((videoElement.videoHeight / videoElement.videoWidth) * 640);
+                        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                        const base64Image = canvas.toDataURL('image/jpeg', 0.5).split(',')[1];
+                        if (ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ image: base64Image })); }
+                    }
+                }, 500);
+
+                document.getElementById('status-scr').classList.add('live');
+                document.getElementById('btn-screen').classList.add('active');
+                appendLog("OPTICAL SENSORS ONLINE.", "#FF9500");
+            } catch (err) { console.error("Screen capture failed.", err); }
+        });
+
+        document.getElementById('btn-connect').addEventListener('click', async () => {
+            try {
+                micContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+                playContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+                const micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const source = micContext.createMediaStreamSource(micStream);
+                const processor = micContext.createScriptProcessor(4096, 1, 1);
+
+                source.connect(processor);
+                processor.connect(micContext.destination);
+
+                processor.onaudioprocess = (e) => {
+                    const float32Array = e.inputBuffer.getChannelData(0);
+                    const int16Array = new Int16Array(float32Array.length);
+                    for (let i = 0; i < float32Array.length; i++) { int16Array[i] = Math.max(-32768, Math.min(32767, float32Array[i] * 32768)); }
+                    let binary = '';
+                    const bytes = new Uint8Array(int16Array.buffer);
+                    for (let i = 0; i < bytes.byteLength; i++) { binary += String.fromCharCode(bytes[i]); }
+                    if (ws.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ audio: window.btoa(binary) })); }
+                };
+
+                document.getElementById('status-aud').classList.add('live');
+                document.getElementById('btn-connect').classList.add('active');
+                appendLog("AUDIO UPLINK ESTABLISHED.", "#FF9500");
+            } catch (err) { console.error("Mic failed.", err); }
+        });
+
+        ws.onmessage = async (event) => {
+            try {
+                const data = JSON.parse(event.data);
+
+                if (data.text) {
+                    hideThinking();
+                    // Handle system execution logs directly
+                    if (data.text.includes("[LOG]")) {
+                        appendLog(data.text.replace("[LOG]", "").trim(), "#FF9500");
+                        currentMessageDiv = null;
+                        return;
+                    }
+
+                    // Setup a new message block if one isn't active
+                    if (!currentMessageDiv) {
+                        currentMessageText = "";
+                        currentMessageDiv = document.createElement('div');
+                        currentMessageDiv.style.marginBottom = "15px";
+                        chatContent.appendChild(currentMessageDiv);
+                    }
+
+                    // Reset the idle timer. If AI stops speaking for 3s, the next text gets a new bubble.
+                    clearTimeout(messageTimeout);
+                    messageTimeout = setTimeout(() => { currentMessageDiv = null; }, 3000);
+
+                    // Append the chunk and re-render the markdown
+                    currentMessageText += data.text;
+                    currentMessageDiv.innerHTML = parseMarkdown(currentMessageText);
+                    chatContent.scrollTop = chatContent.scrollHeight;
+                }
+
+                if (data.audio && playContext) {
+                    hideThinking();
+                    const binaryString = window.atob(data.audio);
+                    const pcmData = new Float32Array(binaryString.length / 2);
+                    for (let i = 0; i < pcmData.length; i++) {
+                        const byte1 = binaryString.charCodeAt(i * 2);
+                        const byte2 = binaryString.charCodeAt(i * 2 + 1);
+                        let val = byte1 | (byte2 << 8);
+                        if (val >= 32768) val -= 65536;
+                        pcmData[i] = val / 32768.0;
+                    }
+
+                    const audioBuffer = playContext.createBuffer(1, pcmData.length, 24000);
+                    audioBuffer.copyToChannel(pcmData, 0);
+
+                    const playSource = playContext.createBufferSource();
+                    playSource.buffer = audioBuffer;
+                    playSource.connect(playContext.destination);
+
+                    const currentTime = playContext.currentTime;
+                    if (nextStartTime < currentTime) nextStartTime = currentTime;
+
+                    playSource.start(nextStartTime);
+
+                    ghostCore.classList.add("speaking");
+                    clearTimeout(audioTimer);
+                    audioTimer = setTimeout(() => { ghostCore.classList.remove("speaking"); }, audioBuffer.duration * 1000);
+                    nextStartTime += audioBuffer.duration;
+                }
+            } catch (e) {
+                console.error("Payload parse error:", e);
+            }
+        };
     </script>
 </body>
+
 </html>
