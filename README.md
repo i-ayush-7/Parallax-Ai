@@ -4,7 +4,7 @@
 
 ---
 
-![img]()
+![img](https://github.com/i-ayush-7/Parallax-Ai/blob/main/AI%20Structure.png)
 
 ## What it does
 
