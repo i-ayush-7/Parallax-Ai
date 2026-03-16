@@ -4,6 +4,8 @@
 
 ---
 
+![img]()
+
 ## What it does
 
 Parallax AI is a floating HUD overlay built with Electron that connects to a FastAPI backend powered by two Gemini models running in parallel:
